@@ -1,13 +1,17 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from django.contrib.auth import authenticate, login
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 from django.db.models import Q
+from django.utils.translation import get_language
+from django.contrib.auth import logout
+from django.http import HttpResponseRedirect
+from django.contrib.auth import login
 
-from .models import CustomUser
-from .forms import (LoginForm, RegisterForm, PaymentForm)
-from .payment import StripePayment
+from .models import CustomUser,StripeCustomer
+from .forms import LoginForm, RegisterForm, PaymentForm
+from utils.stripe_utils import StripeUtils
+
 
 
 def validate_email(request, validate_slug):
@@ -46,10 +50,12 @@ class CreditCardView(View):
             template = 'templates/creditcard.html'
             request.session['next'] +=1
         elif next == 2:
-            msg = StripePayment.make_payment(request.user, request.session['amount'],
-                                             request.session['token'],request.session['time'])
+            customer = StripeCustomer.get_or_create(email=request.user.email,token=request.session['token'])
+            stripe_utils = StripeUtils()
+            charge = stripe_utils.make_charge(request.session['amount'],customer=customer.stripe_id)
             template = 'templates/validated.html'
-            context['msg'] = msg
+            resp = charge.get('response_object')            
+            context['msg'] = resp.get('status',None) 
             request.session['next'] = None
         return render(request, template, context)
 
@@ -60,7 +66,6 @@ class CreditCardView(View):
         if form.is_valid():
             ret = form.save(request.user)
             amount = 35 if time == 'month' else 360
-            amount = amount * 100  # payments are in 'cents'
             request.session['token'] = stripe_token
             request.session['amount'] = amount
             request.session['next'] +=1
@@ -84,30 +89,46 @@ class LoginRegistrationView(View):
                           {'login_form': login_form, 'register_form': register_form})
 
     def post(self, request):
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        name = request.POST.get('name')
-        if name and email and password:
-            user = CustomUser.register(name, password, email)
-            if user:
-                return render(request, 'templates/success.html')
-            else:
-                return render(request, 'templates/error.html')
+        is_login = request.POST.get('is_login', False)
 
-        elif email and password and not name:
-            user = authenticate(email=email, password=password)
-            if user:
-                login(request, user)
-                return redirect('membership')
+        if not is_login:
+            form = RegisterForm(request.POST)
+            if form.is_valid():
+                email = form.validated_data.get('email')
+                password = form.validated_data.get('password')
+                name = form.validated_data.get('name')
+                user = CustomUser.register(name, password, email)
+                if user:
+                    return render(request, 'templates/success.html')
+                else:
+                    return render(request, 'templates/error.html')
             else:
-                return redirect('login')
+                login_form = LoginForm()
+                return render(request, 'templates/login.html',
+                              context={'login_form': login_form, 'register_form': form})
+        else:
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                user = form.login(request)
+                if user:
+                    login(request, user)
+                    return redirect('membership')
+            else:
+                registration_form = RegisterForm()
+                return render(request, 'templates/login.html',
+                              context={'login_form': form, 'register_form': registration_form})
 
 
 class MembershipView(View):
     def get(self, request):
-        #if the user has payed allready
+        #if the user has payed already
         member_payed = request.user.creditcards_set.filter(Q(payment_type='month') | Q(payment_type='year'))
         if member_payed:
             return redirect('/')
         request.session['next'] = 0
-        return render(request, 'templates/membership.html')
+        language = get_language()
+        return render(request, 'templates/membership.html',context={'language_code':language})
+
+def logout_glarus(request):
+    logout(request)
+    return HttpResponseRedirect('/digitalglarus')

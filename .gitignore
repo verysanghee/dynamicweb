@@ -1,7 +1,7 @@
 db.sqlite3
 *.pyc
+*.DS_Store
 build/
-dist/
 *.egg_info
 #editors && utilites.
 *.swp
@@ -11,7 +11,7 @@ __pycache__/
 #django
 local_settings.py
 
-media/*
+media/
 !media/keep
 /CACHE/
 /static/
@@ -28,6 +28,8 @@ ungleich.db
 *~*
 
 secret-key
+
+*.psd
 
 .idea/
 

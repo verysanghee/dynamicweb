@@ -1,9 +1,11 @@
 __author__ = 'tomislav'
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-import six
+from django.contrib.auth import authenticate,login
 
 from .models import CreditCards
+
+from utils.forms import SignupFormMixin
 
 
 class LoginForm(forms.Form):
@@ -15,12 +17,24 @@ class LoginForm(forms.Form):
                                    attrs={'class': 'form-control', 'placeholder': 'Password',
                                           'type': 'password'}))
 
+    def clean(self):
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+        user = authenticate(email=email, password=password)
+        if not user:
+            raise forms.ValidationError("Sorry, that login was invalid. Please try again.")
+        return self.cleaned_data
 
-class RegisterForm(LoginForm):
-    name = forms.CharField(label='Name', max_length=50,
-                           widget=forms.TextInput(
-                               attrs={'class': 'form-control', 'placeholder': 'Enter name'}))
+    def login(self,request):
+        username = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
+        user = authenticate(email=username, password=password)
+        return user
 
+
+class RegisterForm(SignupFormMixin):
+    password = forms.CharField(widget=forms.PasswordInput())
+    confirm_password = forms.CharField(widget=forms.PasswordInput())
 
 class PaymentForm(forms.ModelForm):
     class Meta:
@@ -28,14 +42,16 @@ class PaymentForm(forms.ModelForm):
         fields = ('name', 'card_number', 'expiry_date', 'ccv', 'user_id')
         labels = {'name': _('Name'), 'card_number': _('Card number'), 'expiry_date': _('Expiry date'),
                   'ccv': _('CCV')}
-        exclude = ('user_id','payment_type')
+        exclude = ('user_id', 'payment_type')
         widgets = {
             'name': forms.TextInput(
                 attrs={'class': 'form-control', "placeholder": "Enter name on card",
                        'placeholder': 'Enter name on card'}),
-            'card_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Card Number','data-stripe':'number'}),
+            'card_number': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Card Number', 'data-stripe': 'number'}),
             'expiry_date': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'MM/YYYY'}),
-            'ccv': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'CCV','data-stripe':'cvc'})}
+            'ccv': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'CCV', 'data-stripe': 'cvc'})}
 
     def clean(self):
         data = self.cleaned_data
