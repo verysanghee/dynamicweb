@@ -54,7 +54,7 @@ h6 {
 }
 
 .lead {
-    font-size: 18px;
+    font-size: 21px;
     font-weight: 400;
 }
 .btn{
@@ -75,6 +75,7 @@ h6 {
     border-color: #29427A;
     color: #fff;
     width: auto;
+    font-size: 16px;
 }
 .btn-primary:hover{
     background: rgba(41, 66, 122, 0.8);
@@ -253,7 +254,7 @@ h6 {
     margin-bottom: 25px;
 }
 .split-section .split-text .split-title h2{
-    font-family: 'Montserrat-Light';
+    font-family: 'Montserrat-Regular';
     font-size: 42px;
     line-height: 50px;
     padding-bottom: 25px;
@@ -356,7 +357,7 @@ h6 {
     font-size: 50px;
     line-height: 50px;
     padding-bottom: 25px;
-    color: #3a3a3a;
+    color: #29427A;
     letter-spacing: 1px;
     position: relative;
 }
@@ -409,6 +410,7 @@ h6 {
 .request-section .form-beta input{
      height: 50px;
      font-size: 16px;
+     font-weight: 200;
 }
 .request-section .form-beta .btn-lg{
     width: 100%;
@@ -458,7 +460,7 @@ h6 {
 .contact-section .card .subtitle h3{
     font-size: 30px;
     margin-bottom: 23px;
-    font-family: 'Montserrat-Medium';
+    font-family: 'Montserrat-Regular';
 }
 .contact-section .card .social a:hover{
     text-decoration: none;
