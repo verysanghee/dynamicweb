@@ -202,9 +202,9 @@ h6 {
 
 .intro-message > h1 {
     margin: 0;
-    font-weight: 400;
+    font-weight: 300;
     font-size: 6em;
-    font-family: 'Montserrat-Medium';
+    font-family: 'Montserrat-Light';
 }
 
 .intro-divider {
@@ -241,11 +241,11 @@ h6 {
     margin-bottom: 25px;
 }
 .split-section .split-text .split-title h2{
-    font-family: 'Montserrat-Bold';
-    font-size: 50px;
+    font-family: 'Montserrat-Light';
+    font-size: 42px;
     line-height: 50px;
     padding-bottom: 25px;
-    color: #3a3a3a;
+    color: #29427a;
     letter-spacing: 3px;
 }
 .split-section.left{
@@ -367,12 +367,13 @@ h6 {
     padding: 70px 0;
 }
 .request-section .title h2{
-    font-family: 'Montserrat-Bold';
-    font-size: 65px;
+    font-family: 'Montserrat-Light';
+    font-size: 56px;
     margin: 0;
     color: #fff;
     padding-bottom: 25px;
     position: relative;
+    opacity: .8;
 }
 .request-section .title h2::before{
     content: "";
@@ -454,13 +455,14 @@ h6 {
     max-width: 468px;
 }
 .contact-section .title h2{
-    font-family: 'Montserrat-Bold';
-    font-size: 65px;
+    font-family: 'Montserrat-Light';
+    font-size: 54px;
     margin: 0;
     color: #fff;
     padding-bottom: 25px;
     position: relative;
     text-align: right;
+    opacity: .8;
 }
 .contact-section .title h2::before{
     content: "";
