@@ -17,7 +17,19 @@
 }
 @font-face {
     font-family: 'Montserrat-Light';
-    src: url('../fonts/Montserrat/Montserrat-Light.ttf');
+    src: url('../fonts/Montserrat/Montserrat-Light.ttf'); 
+}
+@font-face {
+    font-family: 'Khula-Light';
+    src: url('../fonts/Khula/Khula-Light.ttf');
+}
+@font-face {
+    font-family: 'Khula-Regular';
+    src: url('../fonts/Khula/Khula-Regular.ttf');
+}
+@font-face {
+    font-family: 'Khula-Bold';
+    src: url('../fonts/Khula/Khula-Bold.ttf');
 }
 body,
 html {
@@ -396,6 +408,7 @@ h6 {
 }
 .request-section .form-beta input{
      height: 50px;
+     font-size: 16px;
 }
 .request-section .form-beta .btn-lg{
     width: 100%;
@@ -436,6 +449,7 @@ h6 {
     box-sizing: border-box;
     padding: 45px;
     margin-top: -115px;
+    font-size: 16px
 }
 .contact-section .card .social a{
     color: #29427A;
